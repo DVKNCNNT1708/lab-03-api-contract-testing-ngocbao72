@@ -9,6 +9,8 @@ on:
 jobs:
   newman:
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
 
     steps:
       - name: Checkout repository
@@ -25,16 +27,12 @@ jobs:
       - name: Lint OpenAPI contracts
         run: npm run lint:contracts
 
-      - name: Start Prism mock servers
+      - name: Start Prism mock servers and run Newman contract tests
         run: |
-          nohup npm run mock:iot > prism-iot.log 2>&1 &
-          nohup npm run mock:vision > prism-vision.log 2>&1 &
-
-      - name: Wait for mock servers
-        run: npx wait-on http://localhost:4010/health http://localhost:4011/health --timeout 30000
-
-      - name: Run Newman contract tests
-        run: npm run test:mock
+          npm run mock:iot > prism-iot.log 2>&1 &
+          npm run mock:vision > prism-vision.log 2>&1 &
+          npx wait-on http://127.0.0.1:4010/health http://127.0.0.1:4011/health --timeout 30000
+          npm run test:all-reporters
 
       - name: Show Prism logs on failure
         if: failure()
