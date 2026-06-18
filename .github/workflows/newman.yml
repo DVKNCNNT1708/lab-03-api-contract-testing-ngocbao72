@@ -31,7 +31,7 @@ jobs:
         run: |
           npm run mock:iot < /dev/null > prism-iot.log 2>&1 &
           npm run mock:vision < /dev/null > prism-vision.log 2>&1 &
-          npx wait-on http://127.0.0.1:4010/health http://127.0.0.1:4011/health --timeout 30000
+          npx wait-on http://127.0.0.1:4010/health http://127.0.0.1:4011/health --timeout 30000 || (echo "=== IOT LOG ===" && cat prism-iot.log && echo "=== VISION LOG ===" && cat prism-vision.log && exit 1)
           npm run test:all-reporters
 
       - name: Show Prism logs on failure
