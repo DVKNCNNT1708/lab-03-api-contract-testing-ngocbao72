@@ -1,0 +1,15 @@
+
+> fit4110_lab03_postman_mock_testing@0.3.0 lint:contracts
+> spectral lint contracts/*.yaml --fail-severity error
+
+
+c:/Lab3/lab-03-api-contract-testing-ngocbao72/contracts/ai-vision.openapi.yaml
+ 2:6  warning  info-contact  Info object must have "contact" object.  info
+
+c:/Lab3/lab-03-api-contract-testing-ngocbao72/contracts/iot-ingestion.openapi.yaml
+ 2:6  warning  info-contact  Info object must have "contact" object.  info
+
+c:/Lab3/lab-03-api-contract-testing-ngocbao72/contracts/team-iot.openapi.yaml
+ 2:6  warning  info-contact  Info object must have "contact" object.  info
+
+✖ 3 problems (0 errors, 3 warnings, 0 infos, 0 hints)

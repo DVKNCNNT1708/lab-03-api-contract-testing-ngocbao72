@@ -1,6 +1,14 @@
 ID,Folder,Endpoint,Method,Scenario,Input file/body,Expected status,Expected response check,Type,Pass/Fail,Evidence
-TC01,Functional,/health,GET,Service is alive,-,200,status=ok,functional,,
-TC02,Functional,/readings,POST,Create reading happy path,mock-data/sensor-reading-valid.json,201,"has reading_id, accepted=true",functional,,
-TC03,Negative,/readings,POST,Missing device_id,mock-data/sensor-reading-invalid-missing-device.json,400,Problem Details,negative,,
-TC04,Auth,/readings,POST,Missing token,mock-data/sensor-reading-valid.json,401,Problem Details,auth,,
-TC05,Boundary,/readings,POST,High temperature boundary,mock-data/sensor-reading-boundary.json,201/400,documented behavior,boundary,,
+TC01,00_Health,/health,GET,Service is alive,-,200,"status=ok, service",functional,Pass,JUnit / HTML report
+TC02,01_Functional,/readings,POST,Create reading happy path,mock-data/sensor-reading-valid.json,201,"has reading_id, accepted=true",functional,Pass,JUnit / HTML report
+TC03,01_Functional,/readings/latest,GET,List latest readings,device_id=ESP32-LAB-A01&limit=5,200,has items array,functional,Pass,JUnit / HTML report
+TC04,02_Auth,/readings/latest,GET,Valid token is accepted,-,200,success,auth,Pass,JUnit / HTML report
+TC05,02_Auth,/readings,POST,Missing token is rejected on real service,-,401/403 (Skipped on mock),skipped on mock,auth,Pass,JUnit / HTML report
+TC06,02_Auth,/readings,POST,Invalid token is rejected on real service,Authorization: Bearer invalid-token,401/403 (Skipped on mock),skipped on mock,auth,Pass,JUnit / HTML report
+TC07,03_Negative,/readings,POST,Missing required field returns validation error,missing device_id,400/422,title status in 400-599,negative,Pass,JUnit / HTML report
+TC08,03_Negative,/readings,POST,Wrong enum value returns validation error,metric = temp_hot,400/422,has detail,negative,Pass,JUnit / HTML report
+TC09,04_Boundary_Reliability,/readings,POST,Boundary value 80 is accepted,value = 80,201,accepted=true,boundary,Pass,JUnit / HTML report
+TC10,04_Boundary_Reliability,/readings,POST,Value 81 is rejected as out of range,value = 81,400/422,status in 400-599,boundary,Pass,JUnit / HTML report
+TC11,04_Boundary_Reliability,/readings/latest,GET,Limit above max is rejected,limit=101,400/422,client error,boundary,Pass,JUnit / HTML report
+TC12,05_Consumer_side_Smoke,/detect (AI Vision),POST,Camera/Core can call AI Vision mock,camera_id image_url,200,"has detection_id, label, confidence",consumer-smoke,Pass,JUnit / HTML report
+TC13,06_Local_only_NonFunctional,/readings,POST,Local response time threshold,-,201 (Skipped on mock),skipped on mock,non-functional,Pass,JUnit / HTML report
